@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scribble/scribble.dart';
+
+import 'list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,11 +39,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late ScribbleNotifier notifier;
+  final myController = TextEditingController();
 
   @override
   void initState() {
     notifier = ScribbleNotifier();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,12 +61,13 @@ class _HomePageState extends State<HomePage> {
         leading: IconButton(
           icon: const Icon(Icons.save),
           tooltip: "Save to Image",
-          onPressed: () => _saveImage(context),
+          // onPressed: () => _saveImage(context),
+          onPressed: () => _inputDialog(context),
         ),
       ),
       body: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context).size.height * 2,
+          height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               Scribble(
@@ -80,15 +94,68 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _saveImage(BuildContext context) async {
-    final image = await notifier.renderImage();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Your Image"),
-        content: Image.memory(image.buffer.asUint8List()),
-      ),
-    );
+  // Future<void> _saveImage(BuildContext context) async {
+  //   final image = await notifier.renderImage();
+  //   writeToFile(image, "test");
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text("Your Image"),
+  //       content: Image.memory(image.buffer.asUint8List()),
+  //       // content: Image.file(writeToFile(image, "test")),
+  //     ),
+  //   );
+  // }
+
+  Future<void> _inputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('タイトル'),
+            content: TextField(
+              decoration: const InputDecoration(hintText: "ここに入力"),
+              controller: myController,
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('キャンセル'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  if(_isValidName(myController.text)) {
+                    notifier.renderImage().then((value) {
+                      // writeToFile(value, myController.text);
+                      // dismiss the dialog
+                      // Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp2()));
+                    });
+                  } else {
+                    // NOTE: Do nothing and let user to retry
+                  }
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  static bool _isValidName(String name)
+  {
+      return true; // TODO
+  }
+
+  static Future<File> writeToFile(ByteData image, String name) async {
+    //var bytes = await rootBundle.load('assets/$imageName.$ext');
+    String tempPath = (await getExternalStorageDirectory())!.path;
+    File file = File('$tempPath/$name.png');
+    await file.writeAsBytes(
+        image.buffer.asUint8List());
+    return file;
   }
 
   Widget _buildStrokeToolbar(BuildContext context) {
