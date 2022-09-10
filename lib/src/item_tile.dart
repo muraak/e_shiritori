@@ -17,16 +17,10 @@ class ItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-            color: item.color,
-          ),
-        ),
-        title: Text(item.name, style: Theme.of(context).textTheme.headline6),
-        trailing: Text('\$ ${(item.price / 100).toStringAsFixed(2)}'),
-      ),
+      child: Column(children: [
+        Container(color: item.color, width: 100, height: 100),
+        Text(item.name, style: Theme.of(context).textTheme.headline6)
+      ]),
     );
   }
 }
@@ -40,14 +34,18 @@ class LoadingItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: const AspectRatio(
-          aspectRatio: 1,
-          child: Placeholder(),
-        ),
-        title: Text('...', style: Theme.of(context).textTheme.headline6),
-        trailing: const Text('\$ ...'),
-      ),
+      // child: ListTile(
+      //   leading: const AspectRatio(
+      //     aspectRatio: 1,
+      //     child: Placeholder(),
+      //   ),
+      //   title: Text('...', style: Theme.of(context).textTheme.headline6),
+      //   // trailing: const Text('\$ ...'),
+      // ),
+      child: Column(children: [
+        const SizedBox(width: 100, height: 100, child: Placeholder(),),
+        Text('...', style: Theme.of(context).textTheme.headline6)
+      ]),
     );
   }
 }
