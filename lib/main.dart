@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   if(_isValidName(myController.text)) {
                     notifier.renderImage().then((value) {
-                      // writeToFile(value, myController.text);
+                      writeToFile(value, myController.text);
                       // dismiss the dialog
                       // Navigator.pop(context);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp2()));

@@ -4,11 +4,18 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 import 'item.dart';
 import 'page.dart';
 
-const catalogLength = 200;
+Future<int> getLength() async
+{
+  return (await getExternalStorageDirectory())!.list().where((event) =>  (p.extension(event.path) == '.png')).length;
+} 
+
+
 
 /// This function emulates a REST API call. You can imagine replacing its
 /// contents with an actual network call, keeping the signature the same.
@@ -17,6 +24,8 @@ const catalogLength = 200;
 Future<ItemPage> fetchPage(int startingIndex) async {
   // We're emulating the delay inherent to making a network call.
   await Future<void>.delayed(const Duration(milliseconds: 500));
+  
+  var catalogLength = await getLength();
 
   // If the [startingIndex] is beyond the bounds of the catalog, an
   // empty page will be returned.
