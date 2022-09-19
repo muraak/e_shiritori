@@ -5,6 +5,7 @@
 // import 'dart:io';
 
 // import 'package:flutter/foundation.dart';
+import 'package:e_shiritori/gameLogic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:window_size/window_size.dart';
@@ -12,42 +13,29 @@ import 'package:provider/provider.dart';
 import 'src/catalog.dart';
 import 'src/item_tile.dart';
 
-// void main() {
-//   setupWindow();
-//   runApp(const MyApp());
-// }
-
-// const double windowWidth = 480;
-// const double windowHeight = 854;
-
-// void setupWindow() {
-//   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-//     WidgetsFlutterBinding.ensureInitialized();
-//     setWindowTitle('Infinite List');
-//     setWindowMinSize(const Size(windowWidth, windowHeight));
-//     setWindowMaxSize(const Size(windowWidth, windowHeight));
-//     getCurrentScreen().then((screen) {
-//       setWindowFrame(Rect.fromCenter(
-//         center: screen!.frame.center,
-//         width: windowWidth,
-//         height: windowHeight,
-//       ));
-//     });
-//   }
-// }
-
 class MyApp2 extends StatelessWidget {
   const MyApp2({Key? key}) : super(key: key);
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ChangeNotifierProvider<Catalog>(
+  //     create: (context) => Catalog(),
+  //     // child: const MaterialApp(
+  //     //   title: 'いままでのえ',
+  //     //   home: MyHomePage(),
+  //     // ),
+  //     child: const MyHomePage(),
+  //   );
+  // }
+
+  // @override
+  // State<StatefulWidget> createState() => MyHomePage();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Catalog>(
-      create: (context) => Catalog(),
-      child: const MaterialApp(
-        title: 'Infinite List Sample',
-        home: MyHomePage(),
-      ),
-    );
+        create: (context) => Catalog(),
+        child: const MyHomePage(),
+      );
   }
 }
 
@@ -58,7 +46,10 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Infinite List Sample'),
+        // title: const Text('いままでのえ'),
+        automaticallyImplyLeading: false,
+        actions:
+            getActionsListForNormalMode(context, CoreLogic().getListMode()),
       ),
       body: Selector<Catalog, int?>(
         // Selector is a widget from package:provider. It allows us to listen
@@ -90,5 +81,67 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> getActionsListForNormalMode(
+      BuildContext context, ListMode mode) {
+    if (mode == ListMode.AnswerList) {
+      return [
+        TextButton(
+          onPressed: () {
+            CoreLogic().setListMode(ListMode.NormalList);
+            Navigator.pop(context);
+          },
+          child: const Text(
+            'もどる',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        // TextButton(
+        //   onPressed: () {
+        //     CoreLogic().setClearRequired(true);
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: const Text(
+        //     'つづける',
+        //     style: TextStyle(color: Colors.white),
+        //   ),
+        // ),
+      ];
+    } else {
+      return [
+        TextButton(
+          onPressed: () {
+            CoreLogic().setClearRequired(false);
+            CoreLogic().discardPreviousImage();
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            'もどる',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            CoreLogic().setClearRequired(true);
+            Navigator.of(context).pop();
+          },
+          child: const Text(
+            'すすむ',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            CoreLogic().setListMode(ListMode.AnswerList);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp2()));
+          },
+          child: const Text(
+            'こたえあわせ',
+            style: TextStyle(color: Colors.white),
+          ),
+        )
+      ];
+    }
   }
 }

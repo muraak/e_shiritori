@@ -18,7 +18,7 @@ class ItemTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(children: [
-        Container(color: item.color, width: 100, height: 100),
+        item.image,
         Text(item.name, style: Theme.of(context).textTheme.headline6)
       ]),
     );

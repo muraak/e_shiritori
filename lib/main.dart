@@ -6,6 +6,7 @@ import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scribble/scribble.dart';
 
+import 'package:e_shiritori/gameLogic.dart';
 import 'list.dart';
 
 void main() {
@@ -18,12 +19,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    CoreLogic().newGame();
     return MaterialApp(
-      title: 'Scribble',
+      title: 'えをかいてね！',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Scribble'),
+      home: const HomePage(title: 'えをかいてね！'),
     );
   }
 }
@@ -59,9 +61,8 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         leading: IconButton(
-          icon: const Icon(Icons.save),
+          icon: const Icon(Icons.done),
           tooltip: "Save to Image",
-          // onPressed: () => _saveImage(context),
           onPressed: () => _inputDialog(context),
         ),
       ),
@@ -94,21 +95,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Future<void> _saveImage(BuildContext context) async {
-  //   final image = await notifier.renderImage();
-  //   writeToFile(image, "test");
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: const Text("Your Image"),
-  //       content: Image.memory(image.buffer.asUint8List()),
-  //       // content: Image.file(writeToFile(image, "test")),
-  //     ),
-  //   );
-  // }
-
   Future<void> _inputDialog(BuildContext context) async {
-    return showDialog(
+    final isOK = await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -127,13 +115,8 @@ class _HomePageState extends State<HomePage> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  if(_isValidName(myController.text)) {
-                    notifier.renderImage().then((value) {
-                      writeToFile(value, myController.text);
-                      // dismiss the dialog
-                      // Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp2()));
-                    });
+                  if (CoreLogic().isValidName(myController.text)) {
+                    Navigator.of(context).pop(true);
                   } else {
                     // NOTE: Do nothing and let user to retry
                   }
@@ -142,20 +125,21 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
-  }
-
-  static bool _isValidName(String name)
-  {
-      return true; // TODO
-  }
-
-  static Future<File> writeToFile(ByteData image, String name) async {
-    //var bytes = await rootBundle.load('assets/$imageName.$ext');
-    String tempPath = (await getExternalStorageDirectory())!.path;
-    File file = File('$tempPath/$name.png');
-    await file.writeAsBytes(
-        image.buffer.asUint8List());
-    return file;
+    if (isOK != null && isOK) {
+      notifier.renderImage().then((value) {
+        CoreLogic().addImage(value, myController.text).then((value) => {
+              CoreLogic().update().then((value) {
+                CoreLogic().setListMode(ListMode.NormalList);
+                myController.clear();
+                Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const MyApp2()))
+                    .then((value) => {
+                          if (CoreLogic().clearRequired()) {notifier.clear()}
+                        });
+              })
+            });
+      });
+    }
   }
 
   Widget _buildStrokeToolbar(BuildContext context) {
@@ -249,6 +233,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPointerModeSwitcher(BuildContext context,
       {required bool penMode}) {
     return FloatingActionButton.small(
+      heroTag: 'penMode',
       onPressed: () => notifier.setAllowedPointersMode(
         penMode ? ScribblePointerMode.all : ScribblePointerMode.penOnly,
       ),
@@ -273,6 +258,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
+        heroTag: 'erase',
         tooltip: "Erase",
         backgroundColor: const Color(0xFFF7FBFF),
         elevation: isSelected ? 10 : 2,
@@ -296,6 +282,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: FloatingActionButton.small(
+          heroTag: 'color${color.value}',
           backgroundColor: color,
           elevation: isSelected ? 10 : 2,
           shape: !isSelected
@@ -313,6 +300,7 @@ class _HomePageState extends State<HomePage> {
   ) {
     return FloatingActionButton.small(
       tooltip: "Undo",
+      heroTag: 'undo',
       onPressed: notifier.canUndo ? notifier.undo : null,
       disabledElevation: 0,
       backgroundColor: notifier.canUndo ? Colors.blueGrey : Colors.grey,
@@ -328,6 +316,7 @@ class _HomePageState extends State<HomePage> {
   ) {
     return FloatingActionButton.small(
       tooltip: "Redo",
+      heroTag: 'redo',
       onPressed: notifier.canRedo ? notifier.redo : null,
       disabledElevation: 0,
       backgroundColor: notifier.canRedo ? Colors.blueGrey : Colors.grey,
@@ -340,6 +329,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildClearButton(BuildContext context) {
     return FloatingActionButton.small(
+      heroTag: 'clear',
       tooltip: "Clear",
       onPressed: notifier.clear,
       disabledElevation: 0,

@@ -5,19 +5,16 @@
 import 'package:flutter/material.dart';
 
 class Item {
-  final Color color;
-
-  final int price;
 
   final String name;
+  final Widget image;
 
   Item({
-    required this.color,
+    required this.image,
     required this.name,
-    required this.price,
   });
 
-  Item.loading() : this(color: Colors.grey, name: '...', price: 0);
+  Item.loading() : this(image: FlutterLogo(), name: '...',);
 
   bool get isLoading => name == '...';
 }
