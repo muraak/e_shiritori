@@ -10,7 +10,49 @@ import 'package:e_shiritori/gameLogic.dart';
 import 'list.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp3());
+}
+
+class StartPage extends StatelessWidget {
+  const StartPage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+            child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ElevatedButton(
+              child: const Text('はじめから'),
+              onPressed: () {
+                CoreLogic().newGame();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const MyApp()));
+              },
+            ),
+            ElevatedButton(
+              child: const Text('つづきから'),
+              onPressed: () {},
+            ),
+          ],
+        )));
+  }
+}
+
+class MyApp3 extends StatelessWidget {
+  const MyApp3({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'えしりとり',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      // home: const HomePage(title: 'えをかいてね！'),
+      home: const StartPage(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -19,14 +61,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    CoreLogic().newGame();
-    return MaterialApp(
-      title: 'えをかいてね！',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(title: 'えをかいてね！'),
-    );
+    return const HomePage(title: 'えをかいてね！');
   }
 }
 
