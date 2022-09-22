@@ -31,7 +31,10 @@ class StartPage extends StatelessWidget {
             ),
             ElevatedButton(
               child: const Text('つづきから'),
-              onPressed: () {},
+              onPressed: () {
+                CoreLogic().loadGame();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const MyApp2()));
+              },
             ),
           ],
         )));

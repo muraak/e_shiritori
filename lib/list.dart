@@ -5,13 +5,15 @@
 // import 'dart:io';
 
 // import 'package:flutter/foundation.dart';
-import 'package:e_shiritori/gameLogic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:window_size/window_size.dart';
 
 import 'src/catalog.dart';
 import 'src/item_tile.dart';
+
+import 'package:e_shiritori/gameLogic.dart';
+import 'package:e_shiritori/main.dart';
 
 class MyApp2 extends StatelessWidget {
   const MyApp2({Key? key}) : super(key: key);
@@ -33,9 +35,9 @@ class MyApp2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<Catalog>(
-        create: (context) => Catalog(),
-        child: const MyHomePage(),
-      );
+      create: (context) => Catalog(),
+      child: const MyHomePage(),
+    );
   }
 }
 
@@ -48,8 +50,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         // title: const Text('いままでのえ'),
         automaticallyImplyLeading: false,
-        actions:
-            getActionsListForNormalMode(context, CoreLogic().getListMode()),
+        actions: getActionsList(context, CoreLogic().getListMode()),
       ),
       body: Selector<Catalog, int?>(
         // Selector is a widget from package:provider. It allows us to listen
@@ -83,8 +84,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  List<Widget> getActionsListForNormalMode(
-      BuildContext context, ListMode mode) {
+  List<Widget> getActionsList(BuildContext context, ListMode mode) {
     if (mode == ListMode.AnswerList) {
       return [
         TextButton(
@@ -107,6 +107,19 @@ class MyHomePage extends StatelessWidget {
         //     style: TextStyle(color: Colors.white),
         //   ),
         // ),
+      ];
+    } else if (mode == ListMode.ContinuedList) {
+      return [
+        TextButton(
+          onPressed: () {
+            CoreLogic().setClearRequired(true);
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const MyApp()));
+          },
+          child: const Text(
+            'すすむ',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ];
     } else {
       return [
@@ -134,7 +147,8 @@ class MyHomePage extends StatelessWidget {
         TextButton(
           onPressed: () {
             CoreLogic().setListMode(ListMode.AnswerList);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const MyApp2()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MyApp2()));
           },
           child: const Text(
             'こたえあわせ',

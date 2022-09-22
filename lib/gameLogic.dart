@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
     NormalList,
     HintedList,
     AnswerList,
+    ContinuedList,
   }
 
 class CoreLogic {
@@ -69,6 +70,7 @@ class CoreLogic {
   }
 
   void loadGame() {
+    setListMode(ListMode.ContinuedList);
     update();
   }
 
@@ -90,7 +92,7 @@ class CoreLogic {
   }
 
   String getName(int index) {
-    if (getListMode() == ListMode.NormalList) {
+    if (getListMode() != ListMode.AnswerList) {
       return 
           '${(index + 1)}.${_getHiddenName(idToName(_idList.elementAt(index)))}';
     } else {
