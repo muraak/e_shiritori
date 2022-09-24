@@ -43,4 +43,17 @@ void main() {
     core.newGame();
     assert(core.idToName('001_てすと') == 'てすと');
   }));
+
+  test('test isHiraganaOrKatakana', (() {
+    assert(isHiraganaOrKatakana('てすと') == true);
+    assert(isHiraganaOrKatakana('てーすと') == true);
+    assert(isHiraganaOrKatakana('テスト') == true);
+    assert(isHiraganaOrKatakana('テースト') == true);
+    assert(isHiraganaOrKatakana('test') == false);
+    assert(isHiraganaOrKatakana('てst') == false);
+    assert(isHiraganaOrKatakana('tえst') == false);
+    assert(isHiraganaOrKatakana('tesと') == false);
+    assert(isHiraganaOrKatakana('テスト！') == false);
+    assert(isHiraganaOrKatakana('テスト-') == false);
+  }));
 }

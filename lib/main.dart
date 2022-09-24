@@ -157,6 +157,14 @@ class _HomePageState extends State<HomePage> {
                     Navigator.of(context).pop(true);
                   } else {
                     // NOTE: Do nothing and let user to retry
+                    showDialog(
+                      context: context, 
+                      builder: (context) {
+                        return const AlertDialog(
+                          title: Text('「ひらがな」か「カタカナ」にしてね！'),
+                          );
+                      }
+                    );
                   }
                 },
               ),

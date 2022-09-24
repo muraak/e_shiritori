@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
-  enum ListMode {
-    NormalList,
-    HintedList,
-    AnswerList,
-    ContinuedList,
-  }
+enum ListMode {
+  NormalList,
+  HintedList,
+  AnswerList,
+  ContinuedList,
+}
+
+@visibleForTesting
+bool isHiraganaOrKatakana(String checkee) {
+    final regex = RegExp(r'^[\u3040-\u309F|\u30A1-\u30FC]+$');
+    return regex.hasMatch(checkee);
+}
 
 class CoreLogic {
   static final CoreLogic _instance = CoreLogic._internal();
@@ -38,10 +44,7 @@ class CoreLogic {
   }
 
   bool isValidName(String name) {
-    // TODO: check follwing:
-    // - is not already exist
-    // - is not terminated by 「ん」 <== optional
-    return true;
+    return isHiraganaOrKatakana(name);
   }
 
   @visibleForTesting
@@ -93,8 +96,7 @@ class CoreLogic {
 
   String getName(int index) {
     if (getListMode() != ListMode.AnswerList) {
-      return 
-          '${(index + 1)}.${_getHiddenName(idToName(_idList.elementAt(index)))}';
+      return '${(index + 1)}.${_getHiddenName(idToName(_idList.elementAt(index)))}';
     } else {
       return '${(index + 1)}.${idToName(_idList.elementAt(index))}';
     }
@@ -122,6 +124,7 @@ class CoreLogic {
   ListMode getListMode() {
     return _currentListMode;
   }
+
   void setListMode(ListMode mode) {
     _currentListMode = mode;
   }
