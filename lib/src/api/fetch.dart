@@ -19,7 +19,6 @@ import 'page.dart';
 /// It will fetch a page of items from [startingIndex].
 Future<ItemPage> fetchPage(int startingIndex) async {
   // We're emulating the delay inherent to making a network call.
-  await Future<void>.delayed(const Duration(milliseconds: 500));
   
   final catalogLength = CoreLogic().getLength();
 
@@ -33,19 +32,14 @@ Future<ItemPage> fetchPage(int startingIndex) async {
     );
   }
 
-  List<Image> imageList = [];
-
-  for(var i =startingIndex; i < min(itemsPerPage, catalogLength - startingIndex); i++) {
-    imageList.add(await CoreLogic().getImage(i));
-  } 
 
   // The page of items is generated here.
   return ItemPage(
     items: List.generate(
         min(itemsPerPage, catalogLength - startingIndex),
         (index) => Item(
-              name: CoreLogic().getName(index),
-              image: imageList[index - startingIndex],
+              name: CoreLogic().getName(index + startingIndex),
+              image: CoreLogic().getImage(index + startingIndex),
             )),
     startingIndex: startingIndex,
     // Returns `false` if we've reached the [catalogLength].

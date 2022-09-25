@@ -86,7 +86,7 @@ class CoreLogic {
     _length = _idList.length;
   }
 
-  Future<Image> getImage(int index) async {
+  Image getImage(int index) {
     return _dataAdaptor.getImage(_idList.elementAt(index));
   }
 
@@ -166,9 +166,8 @@ class DataAdaptor {
     File('$tempPath/$id.png').delete();
   }
 
-  Future<Image> getImage(String id) async {
-    String tempPath = (await getExternalStorageDirectory())!.path;
-    File file = File('$tempPath/$id.png');
+  Image getImage(String id) {
+    File file = File('$_savePath/$id.png');
     return Image.file(file);
   }
 }
