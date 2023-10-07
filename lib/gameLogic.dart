@@ -72,9 +72,9 @@ class CoreLogic {
     _dataAdaptor.clear();
   }
 
-  void loadGame() {
+  Future<void> loadGame() async {
     setListMode(ListMode.ContinuedList);
-    update();
+    await update();
   }
 
   Future<void> addImage(ByteData image, String name) async {
@@ -134,7 +134,7 @@ class DataAdaptor {
   String _savePath = "";
 
   DataAdaptor() {
-    getExternalStorageDirectory().then((value) => {_savePath = value!.path});
+    getExternalStorageDirectory().then((value) => {_savePath = value!.path});///
   }
 
   Future<List<String>> getIdList() async {

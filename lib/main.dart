@@ -28,8 +28,9 @@ class StartPage extends StatelessWidget {
             ElevatedButton(
               child: const Text('つづきから'),
               onPressed: () {
-                CoreLogic().loadGame();
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const MyApp2()));
+                CoreLogic().loadGame().then((value) => {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const MyApp2()))
+                });
               },
             ),
           ],
@@ -101,6 +102,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Stack(
@@ -110,8 +112,8 @@ class _HomePageState extends State<HomePage> {
                 drawPen: true,
               ),
               Positioned(
-                top: 16,
                 right: 16,
+                height: MediaQuery.of(context).size.height - 32,
                 child: Column(
                   children: [
                     _buildColorToolbar(context),
@@ -253,13 +255,13 @@ class _HomePageState extends State<HomePage> {
           ),
           _buildClearButton(context),
           const Divider(
-            height: 20.0,
+            height: 10.0,
           ),
           _buildPointerModeSwitcher(context,
               penMode:
                   state.allowedPointersMode == ScribblePointerMode.penOnly),
           const Divider(
-            height: 20.0,
+            height: 10.0,
           ),
           _buildEraserButton(context, isSelected: state is Erasing),
           _buildColorButton(context, color: Colors.black, state: state),
@@ -326,7 +328,7 @@ class _HomePageState extends State<HomePage> {
       child: FloatingActionButton.small(
           heroTag: 'color${color.value}',
           backgroundColor: color,
-          elevation: isSelected ? 10 : 2,
+          elevation: isSelected ? 5 : 2,
           shape: !isSelected
               ? const CircleBorder()
               : RoundedRectangleBorder(
