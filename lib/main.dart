@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:scribble/scribble.dart';
 
 import 'package:e_shiritori/gameLogic.dart';
@@ -284,7 +280,7 @@ class _HomePageState extends State<HomePage> {
         penMode ? ScribblePointerMode.all : ScribblePointerMode.penOnly,
       ),
       tooltip:
-          "Switch drawing mode to " + (penMode ? "all pointers" : "pen only"),
+          "Switch drawing mode to ${penMode ? "all pointers" : "pen only"}",
       child: AnimatedSwitcher(
         duration: kThemeAnimationDuration,
         child: !penMode
@@ -313,8 +309,8 @@ class _HomePageState extends State<HomePage> {
             : RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-        child: const Icon(Icons.remove, color: Colors.blueGrey),
         onPressed: notifier.setEraser,
+        child: const Icon(Icons.remove, color: Colors.blueGrey),
       ),
     );
   }
