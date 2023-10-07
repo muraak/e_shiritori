@@ -134,7 +134,7 @@ class DataAdaptor {
   String _savePath = "";
 
   DataAdaptor() {
-    getExternalStorageDirectory().then((value) => {_savePath = value!.path});///
+    getExternalStorageDirectory().then((value) => {_savePath = value!.path});
   }
 
   Future<List<String>> getIdList() async {
