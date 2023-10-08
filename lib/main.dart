@@ -117,10 +117,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     _buildColorToolbar(context),
-                    const Divider(
-                      height: 32,
-                    ),
-                    _buildStrokeToolbar(context),
                   ],
                 ),
               )
@@ -265,10 +261,12 @@ class _HomePageState extends State<HomePage> {
           ),
           _buildEraserButton(context, isSelected: state is Erasing),
           _buildColorButton(context, color: Colors.black, state: state),
+          _buildColorButton(context, color: Colors.brown, state: state),
           _buildColorButton(context, color: Colors.red, state: state),
+          _buildColorButton(context, color: Colors.yellow, state: state),
           _buildColorButton(context, color: Colors.green, state: state),
           _buildColorButton(context, color: Colors.blue, state: state),
-          _buildColorButton(context, color: Colors.yellow, state: state),
+          _buildColorButton(context, color: Colors.purple, state: state),
         ],
       ),
     );
