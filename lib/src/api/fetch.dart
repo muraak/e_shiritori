@@ -38,8 +38,8 @@ Future<ItemPage> fetchPage(int startingIndex) async {
     items: List.generate(
         min(itemsPerPage, catalogLength - startingIndex),
         (index) => Item(
-              name: CoreLogic().getName(index + startingIndex),
-              image: CoreLogic().getImage(index + startingIndex),
+              name: CoreLogic().getName(index + startingIndex),///
+              image: CoreLogic().getImage(index + startingIndex),///
             )),
     startingIndex: startingIndex,
     // Returns `false` if we've reached the [catalogLength].

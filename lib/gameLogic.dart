@@ -86,8 +86,16 @@ class CoreLogic {
     _length = _idList.length;
   }
 
+  int getReversedIndex(int index) {
+    return _length - index - 1;
+  }
+
   Image getImage(int index) {
-    return _dataAdaptor.getImage(_idList.elementAt(index));
+    if (getListMode() != ListMode.AnswerList) {
+      return _dataAdaptor.getImage(_idList.elementAt(getReversedIndex(index)));
+    } else {
+      return _dataAdaptor.getImage(_idList.elementAt(index));
+    }
   }
 
   String _getHiddenName(String rawName) {
@@ -96,7 +104,7 @@ class CoreLogic {
 
   String getName(int index) {
     if (getListMode() != ListMode.AnswerList) {
-      return '${(index + 1)}.${_getHiddenName(idToName(_idList.elementAt(index)))}';
+      return '${(getReversedIndex(index) + 1)}.${_getHiddenName(idToName(_idList.elementAt(getReversedIndex(index))))}';
     } else {
       return '${(index + 1)}.${idToName(_idList.elementAt(index))}';
     }
