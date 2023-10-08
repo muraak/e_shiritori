@@ -59,6 +59,7 @@ class MyHomePage extends StatelessWidget {
         // at this level.
         selector: (context, catalog) => catalog.itemCount,
         builder: (context, itemCount, child) => ListView.builder(
+          reverse: true,
           // When `itemCount` is null, `ListView` assumes an infinite list.
           // Once we provide a value, it will stop the scrolling beyond
           // the last element.

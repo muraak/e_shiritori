@@ -87,7 +87,7 @@ class CoreLogic {
   }
 
   Image getImage(int index) {
-    return _dataAdaptor.getImage(_idList.elementAt(index));
+    return _dataAdaptor.getImage(_idList.elementAt(_length - index - 1));
   }
 
   String _getHiddenName(String rawName) {
@@ -96,9 +96,9 @@ class CoreLogic {
 
   String getName(int index) {
     if (getListMode() != ListMode.AnswerList) {
-      return '${(index + 1)}.${_getHiddenName(idToName(_idList.elementAt(index)))}';
+      return '${(_length - index - 1 + 1)}.${_getHiddenName(idToName(_idList.elementAt(_length - index - 1)))}';
     } else {
-      return '${(index + 1)}.${idToName(_idList.elementAt(index))}';
+      return '${(_length - index - 1 + 1)}.${idToName(_idList.elementAt(_length - index - 1))}';
     }
   }
 
