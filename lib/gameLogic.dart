@@ -13,8 +13,8 @@ enum ListMode {
 
 @visibleForTesting
 bool isHiraganaOrKatakana(String checkee) {
-    final regex = RegExp(r'^[\u3040-\u309F|\u30A1-\u30FC]+$');
-    return regex.hasMatch(checkee);
+  final regex = RegExp(r'^[\u3040-\u309F|\u30A1-\u30FC]+$');
+  return regex.hasMatch(checkee);
 }
 
 class CoreLogic {
@@ -28,7 +28,6 @@ class CoreLogic {
   final DataAdaptor _dataAdaptor = DataAdaptor();
   int _length = 0;
   List<String> _idList = [];
-  bool _hideName = true;
 
   Future<void> updateIdList() async {
     _idList = await _dataAdaptor.getIdList();
@@ -37,7 +36,7 @@ class CoreLogic {
 
   static Future<File> _save(ByteData image, String name) async {
     //var bytes = await rootBundle.load('assets/$imageName.$ext');
-    String tempPath = (await getExternalStorageDirectory())!.path;
+    String tempPath = (await DataAdaptor.getDirToSave()).path;
     File file = File('$tempPath/$name.png');
     await file.writeAsBytes(image.buffer.asUint8List());
     return file;
@@ -141,12 +140,20 @@ class CoreLogic {
 class DataAdaptor {
   String _savePath = "";
 
+  static Future<Directory> getDirToSave() async {
+    if (Platform.isAndroid) {
+      return await getExternalStorageDirectory().then((value) => value!);
+    } else {
+      return await getApplicationDocumentsDirectory();
+    }
+  }
+
   DataAdaptor() {
-    getExternalStorageDirectory().then((value) => {_savePath = value!.path});
+    getDirToSave().then((value) => {_savePath = value.path});
   }
 
   Future<List<String>> getIdList() async {
-    return (await getExternalStorageDirectory())!
+    return (await getDirToSave())
         .listSync()
         .map((e) => e.path)
         .toList()
@@ -157,20 +164,20 @@ class DataAdaptor {
   }
 
   void clear() async {
-    (await getExternalStorageDirectory())?.list().forEach((element) {
+    (await getDirToSave()).list().forEach((element) {
       element.delete();
     });
   }
 
   Future<File> addImage(ByteData image, String id) async {
-    String tempPath = (await getExternalStorageDirectory())!.path;
+    String tempPath = (await getDirToSave()).path;
     File file = File('$tempPath/$id.png');
     await file.writeAsBytes(image.buffer.asUint8List());
     return file;
   }
 
   void deleteImage(String id) async {
-    String tempPath = (await getExternalStorageDirectory())!.path;
+    String tempPath = (await getDirToSave()).path;
     File('$tempPath/$id.png').delete();
   }
 
