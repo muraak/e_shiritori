@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:scribble/scribble.dart';
+import 'package:fullscreen_window/fullscreen_window.dart';
 
 import 'package:e_shiritori/gameLogic.dart';
 import 'list.dart';
@@ -13,6 +14,7 @@ class StartPage extends StatelessWidget {
   const StartPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    FullScreenWindow.setFullScreen(true);
     return Scaffold(
         body: Center(
             child: Column(
